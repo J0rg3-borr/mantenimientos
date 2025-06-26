@@ -138,7 +138,7 @@
     </nav>
     <!-- Fin barra de navegación -->
 
-    <div class="container">
+    <div class="container" id="app-crear">
         <!-- <h2>ZINKO - Soluciones Tecnológicas</h2> -->
         <h3>Hoja de Vida del Equipo</h3>
         <p><strong>Fecha:</strong> <input type="date" id="fecha"></p>
@@ -406,7 +406,7 @@
             <p><strong>Aprobado por:</strong> <input type="text"></p>
         </div>
 
-        <button type="submit" class="submit-btn">Guardar</button>
+        <button type="button" class="submit-btn">Guardar</button>
         <button type="button" id="descargar-btn">Descargar informe</button>
     </div>
 
@@ -423,9 +423,7 @@ function mostrarVista(vista) {
     document.getElementById('app-crear').style.display = vista === 'crear' ? 'block' : 'none';
     document.getElementById('app-consultar').style.display = vista === 'consultar' ? 'block' : 'none';
 }
-document.getElementById('nav-crear').onclick = function() { mostrarVista('crear'); };
 document.getElementById('nav-consultar').onclick = function() { mostrarVista('consultar'); mostrarRegistros(); };
-document.getElementById('nav-inicio').onclick = function() { mostrarVista('crear'); };
 
 // Guardar en localStorage
 function guardarRegistro(datos) {
@@ -435,7 +433,9 @@ function guardarRegistro(datos) {
 }
 
 // Modifica el botón Guardar para usar localStorage
-document.querySelectorAll('.submit-btn')[0].addEventListener('click', function(e) {
+// Ahora guarda más campos del formulario
+
+document.querySelector('.submit-btn').addEventListener('click', function(e) {
     e.preventDefault();
     datosGuardados = {
         fecha: document.getElementById('fecha').value,
@@ -446,43 +446,78 @@ document.querySelectorAll('.submit-btn')[0].addEventListener('click', function(e
             pc: document.getElementById('tipo_pc').checked,
             aio: document.getElementById('tipo_aio').checked
         },
-        marca: document.getElementById('marca').value
+        marca: document.getElementById('marca').value,
+        cpu: document.querySelectorAll('tr:nth-child(2) td input')[0].value,
+        modelo: document.querySelectorAll('tr:nth-child(2) td input')[1].value,
+        activo: document.querySelectorAll('tr:nth-child(3) td input')[0].value,
+        serial: document.querySelectorAll('tr:nth-child(3) td input')[1].value,
+        estado_fisico: Array.from(document.querySelectorAll('tr:nth-child(4) td input[type="checkbox"]')).map((c, i) => c.checked ? ['Bueno','Aceptable','Deteriorado','Malo'][i] : null).filter(Boolean),
+        disco: {
+            capacidad: document.querySelectorAll('tr:nth-child(2) td select')[0].value,
+            tipo: document.querySelectorAll('tr:nth-child(2) td select')[1].value,
+            activo: document.querySelectorAll('tr:nth-child(2) td input')[0].value,
+            marca: document.querySelectorAll('tr:nth-child(2) td input')[1].value,
+            serial: document.querySelectorAll('tr:nth-child(2) td input')[2].value
+        },
+        ram: {
+            tipo: document.querySelectorAll('tr:nth-child(4) td select')[0].value,
+            capacidad: document.querySelectorAll('tr:nth-child(4) td select')[1].value,
+            activo: document.querySelectorAll('tr:nth-child(4) td input')[0].value,
+            marca: document.querySelectorAll('tr:nth-child(4) td input')[1].value,
+            serial: document.querySelectorAll('tr:nth-child(4) td input')[2].value
+        },
+        // Puedes seguir agregando más campos según lo necesites
     };
     guardarRegistro(datosGuardados);
     alert('Información guardada correctamente.');
 });
 
-// Mostrar registros en tabla
 function mostrarRegistros() {
     let registros = JSON.parse(localStorage.getItem('registrosHV')) || [];
     let tabla = document.getElementById('tabla-registros');
-    if (registros.length === 0) {
-        tabla.innerHTML = '<tr><td>No hay registros guardados.</td></tr>';
-        return;
-    }
-    let html = '<tr><th>Fecha</th><th>Cliente</th><th>Técnico</th><th>Marca</th></tr>';
-    registros.forEach(r => {
-        html += `<tr><td>${r.fecha}</td><td>${r.cliente}</td><td>${r.tecnico}</td><td>${r.marca}</td></tr>`;
+    tabla.innerHTML = '';
+    registros.forEach((registro, index) => {
+        let fila = tabla.insertRow();
+        fila.insertCell().innerText = index + 1;
+        fila.insertCell().innerText = registro.fecha;
+        fila.insertCell().innerText = registro.cliente;
+        fila.insertCell().innerText = registro.tecnico;
+        fila.insertCell().innerText = registro.marca;
+        fila.insertCell().innerText = registro.cpu;
+        fila.insertCell().innerText = registro.modelo;
+        fila.insertCell().innerText = registro.activo;
+        fila.insertCell().innerText = registro.serial;
+        fila.insertCell().innerText = registro.estado_fisico.join(', ');
+        fila.insertCell().innerText = registro.disco.capacidad;
+        fila.insertCell().innerText = registro.disco.tipo;
+        fila.insertCell().innerText = registro.disco.activo;
+        fila.insertCell().innerText = registro.disco.marca;
+        fila.insertCell().innerText = registro.disco.serial;
+        fila.insertCell().innerText = registro.ram.tipo;
+        fila.insertCell().innerText = registro.ram.capacidad;
+        fila.insertCell().innerText = registro.ram.activo;
+        fila.insertCell().innerText = registro.ram.marca;
+        fila.insertCell().innerText = registro.ram.serial;
+        // Agrega más celdas según los campos que tengas
     });
-    tabla.innerHTML = html;
 }
 
-// Descargar la información guardada al presionar el nuevo botón
-function descargarExcel(datos) {
-    const ws = XLSX.utils.json_to_sheet([datos]);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "HojaVida");
-    XLSX.writeFile(wb, "hoja-vida-equipo.xlsx");
-}
-
-document.getElementById('descargar-btn').addEventListener('click', function(e) {
-    e.preventDefault();
-    if (!datosGuardados) {
-        alert('Primero debes guardar la información.');
-        return;
+// Función para descargar el informe como archivo Excel
+document.getElementById('descargar-btn').addEventListener('click', function() {
+    let registros = JSON.parse(localStorage.getItem('registrosHV')) || [];
+    if (registros.length === 0) {
+        return alert('No hay datos para descargar.');
     }
-    descargarExcel(datosGuardados);
+    // Crea un libro de Excel
+    const wb = XLSX.utils.book_new();
+    // Convierte los registros a una hoja de cálculo
+    const ws = XLSX.utils.json_to_sheet(registros);
+    // Agrega la hoja al libro
+    XLSX.utils.book_append_sheet(wb, ws, 'Registros');
+    // Descarga el libro como archivo Excel
+    XLSX.writeFile(wb, 'registros_hoja_de_vida.xlsx');
 });
-</script>
+
+    </script>
 </body>
 </html>
