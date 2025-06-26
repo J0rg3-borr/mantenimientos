@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoja de Vida del Equipo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f6fa;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 30px auto 0 auto;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 4px 24px #0002;
+            padding: 30px 24px 24px 24px;
+            width: 95vw;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+        }
+        th, td {
+            border: 1px solid #d0d0d0;
+            padding: 8px 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #e3f2fd;
+        }
+        h2, h3 {
+            text-align: center;
+            margin-top: 0;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f8f8;
+            border-bottom: 2px solid #2196f3;
+            padding: 10px 30px;
+            margin-bottom: 0;
+            box-shadow: 0 2px 8px #0001;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .navbar-logo {
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar-links button {
+            margin: 0 5px;
+            padding: 8px 16px;
+            border: 1px solid #2196f3;
+            background: #fff;
+            color: #2196f3;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .navbar-links button:hover {
+            background: #2196f3;
+            color: #fff;
+        }
+        input[type="text"], select, input[type="date"], textarea {
+            width: 100%;
+            padding: 6px 8px;
+            margin: 4px 0;
+            border: 1px solid #bdbdbd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+        }
+        .submit-btn, #descargar-btn {
+            background: #2196f3;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 24px;
+            font-size: 1em;
+            font-weight: bold;
+            margin: 10px 5px 0 0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .submit-btn:hover, #descargar-btn:hover {
+            background: #1769aa;
+        }
+        @media (max-width: 900px) {
+            .container {
+                padding: 10px 2vw;
+            }
+            table, th, td {
+                font-size: 0.95em;
+            }
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 2vw 1vw;
+            }
+            .navbar {
+                flex-direction: column;
+                padding: 10px 5vw;
+            }
+            .navbar-links {
+                margin-top: 10px;
+            }
+            h2, h3 {
+                font-size: 1.1em;
+            }
+            table, th, td {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+    <!-- Incluye la librería SheetJS para la exportación a Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <span style="font-size:0.9em;color:#4caf50;">Soluciones Tecnológicas</span>
+        </div>
+        <div class="navbar-links">
+            <button id="nav-consultar">Consultar historial de los mantenimientos</button>
+        </div>
+    </nav>
+    <!-- Fin barra de navegación -->
+
+    <div class="container">
+        <!-- <h2>ZINKO - Soluciones Tecnológicas</h2> -->
+        <h3>Hoja de Vida del Equipo</h3>
+        <p><strong>Fecha:</strong> <input type="date" id="fecha"></p>
+        <p><strong>Nombre del Cliente:</strong> <input type="text" id="cliente"></p>
+        <p><strong>Técnico Responsable:</strong> <input type="text" id="tecnico"></p>
+        
+        <div class="form-section">
+            <table>
+                <tr>
+                    <th>Tipo de Equipo</th>
+                    <td>
+                        <input type="checkbox" id="tipo_pt"> PT
+                        <input type="checkbox" id="tipo_pc"> PC
+                        <input type="checkbox" id="tipo_aio"> AIO
+                    </td>
+                    <th>Marca</th>
+                    <td>
+                        <select id="marca">
+                            <option value="" selected disabled></option>
+                            <option value="Lenovo">Lenovo</option>
+                            <option value="HP">HP</option>
+                            <option value="Dell">Dell</option>
+                            <option value="Asus">Asus</option>
+                            <option value="Acer">Acer</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>CPU</th>
+                    <td><input type="text"></td>
+                    <th>Modelo</th>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <th>Activo</th>
+                    <td><input type="text"></td>
+                    <th>Serial</th>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <th>Estado Físico</th>
+                    <td colspan="3">
+                        <input type="checkbox"> Bueno
+                        <input type="checkbox"> Aceptable
+                        <input type="checkbox"> Deteriorado
+                        <input type="checkbox"> Malo
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="form-section">
+            <h3>Componentes Internos</h3>
+            <table>
+                <tr>
+                    <th>Disco Duro</th>
+                    <th>Capacidad</th>
+                    <th>Tipo</th>
+                    <th>Activo</th>
+                    <th>Marca</th>
+                    <th>Serial</th>
+                </tr>
+                <tr>
+                    <td>HDD / SSD</td>
+                    <td>
+                        <select>
+                            <option value="" selected disabled>Seleccione</option>
+                            <option value="240GB">240GB</option>
+                            <option value="256GB">256GB</option>
+                            <option value="480GB">480GB</option>
+                            <option value="500GB">500GB</option>
+                            <option value="512GB">512GB</option>
+                            <option value="1000GB">1000GB</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select>
+                            <option value="" selected disabled>Seleccione</option>
+                            <option value="SATA">SATA</option>
+                            <option value="M.2">M.2</option>
+                        </select>
+                    </td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+            
+                <tr>
+                    <th>RAM</th>
+                    <th>Tipo</th>
+                    <th>Capacidad</th>
+                    <th>Activo</th>
+                    <th>Marca</th>
+                    <th>Serial</th>
+                </tr>
+                <tr>
+                    <td>DDR3 / DDR4</td>
+                    <td>
+                        <select>
+                            <option value="" selected disabled>Seleccione</option>
+                            <option value="PC">PC</option>
+                            <option value="PT">PT</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select>
+                            <option value="" selected disabled>Seleccione</option>
+                            <option value="4GB">4GB</option>
+                            <option value="8GB">8GB</option>
+                            <option value="16GB">16GB</option>
+                            <option value="32GB">32GB</option>
+                        </select>
+                    </td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+            
+                <tr>
+                    <th>Tarjeta PCI</th>
+                    <th>Capacidad</th>
+                    <th>Marca</th>
+                    <th>Serial</th>
+                </tr>
+                <tr>
+                    <td>RED / GRÁFICA</td>
+                    <td>
+                        <select>
+                            <option value="" selected disabled>Seleccione</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="4">4</option>
+                        </select>
+                    </td>
+                    <td><input type="text"></td>
+                    <td><input type="text"></td>
+                </tr>
+            </table>
+        </div>
+        
+
+        <div class="form-section">
+            <h3>Periféricos</h3>
+            <table>
+                <tr>
+                    <th>Monitor</th>
+                    <td>
+                        <label>Conexión:</label>
+                        <select>
+                            <option value="" selected disabled>Seleccione</option>
+                            <option value="vga">VGA</option>
+                            <option value="hdmi">HDMI</option>
+                            <option value="displayport">DisplayPort</option>
+                        </select>
+                        <label>Pulgadas:</label>
+                        <select>
+                            <option value="" selected disabled>seleccione</option>
+                            <option value="19">19"</option>
+                            <option value="20">20"</option>
+                            <option value="22">22"</option>
+                            <option value="24">24"</option>
+                            <option value="32">32"</option>
+                        </select>
+                        <label>Marca:</label>
+                        <select>
+                        <option  value="" selected disabled>seleccione</option>
+                        <option value="LG">LG</option>
+                        <option value="Sansung">samsung</option>
+                        <option value="Viewsonic">Viewsonic</option>
+                        <option value="Dell">Dell</option>
+                        </select>
+                        <label>Modelo:</label>
+                        <input type="text" placeholder="Modelo">
+                        <label>Serial:</label>
+                        <input type="text" placeholder="Número de serie">
+                    </td>
+                </tr>
+                <tr>
+                    <th>Teclado</th>
+                    <td>
+                        <label><input type="checkbox"> Bueno</label>
+                        <label><input type="checkbox"> Malo</label>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Mouse</th>
+                    <td>
+                        <label><input type="checkbox"> Bueno</label>
+                        <label><input type="checkbox"> Malo</label>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+
+        <div class="form-section">
+            <h3>Diagnóstico y Reparación</h3>
+            <table>
+                <tr>
+                    <th>Componente</th>
+                    <th>Estado</th>
+                    <th>Componente</th>
+                    <th>Estado</th>
+                    <th>Componente</th>
+                    <th>Estado</th>
+                    <th>Componente</th>
+                    <th>Estado</th>
+                </tr>
+                <tr>
+                    <td>Board</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                    <td>Tarjeta de Red</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                    <td>Cámara</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                    <td>Puerto USB</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                </tr>
+                <tr>
+                    <td>Flex</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                    <td>Bisagras</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                    <td>Micrófono</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                    <td>Puerto de Red</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                </tr>
+                <tr>
+                    <td>RAM</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                    <td>Teclado</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                    <td>Jack Audio</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                    <td>Puerto de Video</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                </tr>
+                <tr>
+                    <td>Disco</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                    <td>Pantalla</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                    <td>Carcasa</td>
+                    <td><input type="checkbox"> Sí <input type="checkbox"> No</td>
+                    <td></td> 
+                    <td></td> 
+                </tr>
+            </table>
+        </div>
+        
+
+        <div class="form-section">
+            <h3>Estado Final</h3>
+            <p><strong>Para Reparación:</strong> <input type="text"></p>
+            <p><strong>Para Baja:</strong> <input type="text"></p>
+            <p><strong>Operativo:</strong> <input type="text"></p>
+            <p><strong>Observaciones:</strong></p>
+            <textarea rows="10" cols="155"></textarea>
+        </div>
+
+        <div class="form-section">
+            <h3>Firmas</h3>
+            <p><strong>Revisado por:</strong> <input type="text"></p>
+            <p><strong>Aprobado por:</strong> <input type="text"></p>
+        </div>
+
+        <button type="submit" class="submit-btn">Guardar</button>
+        <button type="button" id="descargar-btn">Descargar informe</button>
+    </div>
+
+    <div id="app-consultar" style="display:none;">
+        <h2>Registros Guardados</h2>
+        <table id="tabla-registros" style="width:100%;margin-top:20px;"></table>
+    </div>
+
+    <script>
+let datosGuardados = null;
+
+// Cambia entre vistas
+function mostrarVista(vista) {
+    document.getElementById('app-crear').style.display = vista === 'crear' ? 'block' : 'none';
+    document.getElementById('app-consultar').style.display = vista === 'consultar' ? 'block' : 'none';
+}
+document.getElementById('nav-crear').onclick = function() { mostrarVista('crear'); };
+document.getElementById('nav-consultar').onclick = function() { mostrarVista('consultar'); mostrarRegistros(); };
+document.getElementById('nav-inicio').onclick = function() { mostrarVista('crear'); };
+
+// Guardar en localStorage
+function guardarRegistro(datos) {
+    let registros = JSON.parse(localStorage.getItem('registrosHV')) || [];
+    registros.push(datos);
+    localStorage.setItem('registrosHV', JSON.stringify(registros));
+}
+
+// Modifica el botón Guardar para usar localStorage
+document.querySelectorAll('.submit-btn')[0].addEventListener('click', function(e) {
+    e.preventDefault();
+    datosGuardados = {
+        fecha: document.getElementById('fecha').value,
+        cliente: document.getElementById('cliente').value,
+        tecnico: document.getElementById('tecnico').value,
+        tipo_equipo: {
+            pt: document.getElementById('tipo_pt').checked,
+            pc: document.getElementById('tipo_pc').checked,
+            aio: document.getElementById('tipo_aio').checked
+        },
+        marca: document.getElementById('marca').value
+    };
+    guardarRegistro(datosGuardados);
+    alert('Información guardada correctamente.');
+});
+
+// Mostrar registros en tabla
+function mostrarRegistros() {
+    let registros = JSON.parse(localStorage.getItem('registrosHV')) || [];
+    let tabla = document.getElementById('tabla-registros');
+    if (registros.length === 0) {
+        tabla.innerHTML = '<tr><td>No hay registros guardados.</td></tr>';
+        return;
+    }
+    let html = '<tr><th>Fecha</th><th>Cliente</th><th>Técnico</th><th>Marca</th></tr>';
+    registros.forEach(r => {
+        html += `<tr><td>${r.fecha}</td><td>${r.cliente}</td><td>${r.tecnico}</td><td>${r.marca}</td></tr>`;
+    });
+    tabla.innerHTML = html;
+}
+
+// Descargar la información guardada al presionar el nuevo botón
+function descargarExcel(datos) {
+    const ws = XLSX.utils.json_to_sheet([datos]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "HojaVida");
+    XLSX.writeFile(wb, "hoja-vida-equipo.xlsx");
+}
+
+document.getElementById('descargar-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    if (!datosGuardados) {
+        alert('Primero debes guardar la información.');
+        return;
+    }
+    descargarExcel(datosGuardados);
+});
+</script>
+</body>
+</html>
