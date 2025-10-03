@@ -1,0 +1,13 @@
+# Archivos y carpetas a ignorar por Git
+/node_modules/
+/.vscode/
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+.env
+.idea/
+__pycache__/
+*.pyc
+*.bak
+*.swp
